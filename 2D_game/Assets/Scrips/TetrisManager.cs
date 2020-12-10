@@ -20,4 +20,47 @@ public class TetrisManager : MonoBehaviour
    public AudioClip rotate_sound;//方塊移動與旋轉音效 
    public AudioClip delete_sound;//方塊消除音效    
    public AudioClip End_sound;//遊戲結束音效    
+    #region 方法
+    /// <summary>
+    /// 生成俄羅斯方塊
+    /// </summary>
+    private void generate()
+    {
+    }
+    /// <summary>
+    /// 添加分數
+    /// </summary>
+    /// <param name="x"></param>
+    /// <returns></returns>
+    public int add_score(int x)
+    {
+        return x;
+    }
+    /// <summary>
+    /// 遊戲時間
+    /// </summary>
+    private void time_pass()
+    {
+    }
+    /// <summary>
+    /// 遊戲結束
+    /// </summary>
+    private void end_of_game()
+    {
+    }
+    /// <summary>
+    /// 重新遊戲
+    /// </summary>
+    public void restarted()
+    {
+    }
+    /// <summary>
+    /// 離開遊戲
+    /// </summary>
+    public void exit_game()
+    {
+    }
+
+
+    #endregion
 }

@@ -397,8 +397,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7514664bea476db45b93e4df1028ca31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 3
-  weight: 0
+  size: 9
+  weight: 1.221
   colar: white
   logo: BMW
   has_window: 1

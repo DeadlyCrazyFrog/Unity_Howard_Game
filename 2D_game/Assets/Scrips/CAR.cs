@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CAR : MonoBehaviour
 {
+    #region 車子參數及外觀設定
     // [Header("字串")]  標題黨
     // [Tooltip("字串")] 註解(游標接觸觸發)
     // [Range( n , m )] 數值範圍 n m 為最小值及最大值(注意類別: float double)
@@ -34,11 +35,46 @@ public class CAR : MonoBehaviour
     //====遊戲跟目錄屬性(可折疊 粗體字)有包含即可套入
     public Transform tra_1;
     public Camera cm_1;
+    #endregion
+    #region 方法
+    // 類型配上void表示無傳回值
+    private void MethodA(float x)
+    {
+        x *=60;//x=x*某數字
+        print("我是KID,我的體重是"+x+"公斤");
+    }
+    //若非void,有傳回值時要加上return 
+    //各個method內的變數不影響外面，名子相同也不影響
+    private int MethodB()
+    {
+        int x = 1 + 1;
+        return x;
+    }
+    private float BMI(float w , float h)
+    {
+        w = w * 60;
+        float   bmi = w / (h * h);
+        return bmi;
+    }
+    private void drive(float v , string dir)
+    {
+        print("時速為:" + v);
+        print("方向為:" + dir);
+    }
+    #endregion
     //====開始事件 資料的取得與設定
     private void Start()
     {
+
         print("Hello Kid");
         print("品牌為"+logo);
+        //test
+        MethodA(weight);
+        //print("一加一等於"+ MethodB());
+        float h = 1.7f;
+        print("我的BMI值是"+BMI(weight,h));
+        print("每天下班");
+        drive(30, "公園");
     }
 
 }
