@@ -1,6 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿//using System.Collections;
+//using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -10,12 +11,14 @@ public class MenuManager : MonoBehaviour
     /// </summary>
     public void statgame()
     {
+        SceneManager.LoadScene("遊戲畫面");
     }
     /// <summary>
     /// 離開遊戲
     /// </summary>
     public void exitgame()
     {
+        Application.Quit();
     }
     #endregion
 
