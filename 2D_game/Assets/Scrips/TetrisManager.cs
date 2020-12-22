@@ -25,9 +25,36 @@ public class TetrisManager : MonoBehaviour
     [Header("產生方塊的目標區域")]
     public Transform to_canvas;
     public int nexttarget;
+    private RectTransform current_falling;
+    private float timer;
     private void Start()
     {
         generate();
+    }
+    private void Update()
+    {
+        if (current_falling)
+        {
+            counting();
+            if (timer >= Drop_Speed)
+            {
+                timer = 0;
+                current_falling.anchoredPosition -= new Vector2(0f, 50f);
+            }
+            //按鍵往左往右
+            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                current_falling.anchoredPosition += new Vector2(50f, 0f);
+            }
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                current_falling.anchoredPosition -= new Vector2(50f, 0f);
+            }
+            if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                current_falling.Rotate(0,0,-90);
+            }
+        }
     }
     public void StartGAME()
     {
@@ -35,9 +62,10 @@ public class TetrisManager : MonoBehaviour
         //Instantiate(產生的子物件,子物件的目標區域);
         GameObject teris = nextteris.GetChild(nexttarget).gameObject;
         GameObject current=Instantiate(teris, to_canvas);
-        current.GetComponent<RectTransform>().anchoredPosition = new Vector2(-84,207);
+        current.GetComponent<RectTransform>().anchoredPosition = new Vector2(-7,350);
         teris.SetActive(false);
         generate();
+        current_falling = current.GetComponent<RectTransform>();
     }
     #region 方法
     /// <summary>
@@ -47,6 +75,13 @@ public class TetrisManager : MonoBehaviour
     {
        nexttarget = Random.Range(0, 6);
         nextteris.GetChild(nexttarget).gameObject.SetActive(true); 
+    }
+    /// <summary>
+    /// 計時器
+    /// </summary>
+    private void counting()
+    {
+        timer += Time.deltaTime;
     }
     /// <summary>
     /// 添加分數
