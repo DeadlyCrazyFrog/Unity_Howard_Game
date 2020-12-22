@@ -41,28 +41,52 @@ public class TetrisManager : MonoBehaviour
                 timer = 0;
                 current_falling.anchoredPosition -= new Vector2(0f, 50f);
             }
+            #region 按鍵左右選轉加速落下
             //按鍵往左往右
-            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            if (current_falling.anchoredPosition.x < 200)
             {
-                current_falling.anchoredPosition += new Vector2(50f, 0f);
+                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    current_falling.anchoredPosition += new Vector2(50f, 0f);
+                }
             }
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            if (current_falling.anchoredPosition.x >-225 )
             {
-                current_falling.anchoredPosition -= new Vector2(50f, 0f);
+                if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    current_falling.anchoredPosition -= new Vector2(50f, 0f);
+                }
             }
+            //按鍵旋轉
             if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.UpArrow))
             {
                 current_falling.Rotate(0,0,-90);
             }
+            //按鍵加速掉落否則停止
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            {
+                Drop_Speed = 0.2f;
+            }
+            else
+            {
+                Drop_Speed = 1.5f;
+            }
+            # endregion
+            if (current_falling.anchoredPosition.y==-250)
+            {
+                StartGAME();
+            }
         }
+
     }
+
     public void StartGAME()
     {
         //生成generate()裡所指定之方塊樣式
         //Instantiate(產生的子物件,子物件的目標區域);
         GameObject teris = nextteris.GetChild(nexttarget).gameObject;
         GameObject current=Instantiate(teris, to_canvas);
-        current.GetComponent<RectTransform>().anchoredPosition = new Vector2(-7,350);
+        current.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,350);
         teris.SetActive(false);
         generate();
         current_falling = current.GetComponent<RectTransform>();
