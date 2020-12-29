@@ -26,7 +26,7 @@ RectTransform:
   m_GameObject: {fileID: 2410158008982966380}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_Children:
   - {fileID: 8674321581724238313}
   - {fileID: 7338628621583634054}
@@ -54,10 +54,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   T: {fileID: 2410158008982966380}
   Scale_X: 0.3
-  length_0: 50
-  length_90: 50
-  rec_length: 100
+  length_0: 30
+  length_90: 90
+  rec_length: 30
   wall_right: 0
+  wall_left: 0
+  wall_down: 0
 --- !u!1 &3214093120802377884
 GameObject:
   m_ObjectHideFlags: 0
