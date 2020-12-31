@@ -157,9 +157,16 @@ MonoBehaviour:
   length_0: 50
   length_90: 65
   rec_length: 30
+  Limit_R_length0r: 65
+  Limit_R_length90r: 0
+  Limit_R_length0l: 65
+  Limit_R_length90l: 0
+  offsetX: 15
+  offsetY: 15
   wall_right: 0
   wall_left: 0
   wall_down: 0
+  can_rotate: 0
 --- !u!1 &2505826462128939678
 GameObject:
   m_ObjectHideFlags: 0

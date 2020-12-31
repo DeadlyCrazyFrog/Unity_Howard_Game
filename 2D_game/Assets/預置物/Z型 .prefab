@@ -456,7 +456,13 @@ MonoBehaviour:
   Scale_X: 0.3
   length_0: 65
   length_90: 50
-  rec_length: 22.8
+  rec_length: 65
+  Limit_R_length0r: 0
+  Limit_R_length90r: 50
+  Limit_R_length0l: 0
+  Limit_R_length90l: 50
+  offsetX: -15
+  offsetY: 15
   wall_right: 0
   wall_left: 0
   wall_down: 0

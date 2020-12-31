@@ -1,6 +1,7 @@
-﻿//using System.Collections;
+﻿using System.Collections;
 //using System.Collections.Generic;
 using UnityEngine;
+
 public class TetrisManager : MonoBehaviour
 {
     [Header("掉落時間")]
@@ -44,6 +45,10 @@ public class TetrisManager : MonoBehaviour
     }
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            StartCoroutine(shaker());
+        }
         if (current_falling)
         {
             Teris teris = current_falling.GetComponent<Teris>();
@@ -76,15 +81,25 @@ public class TetrisManager : MonoBehaviour
                 }
             }
             //按鍵旋轉
-            if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.UpArrow))
+            if (teris.can_rotate)
             {
-                current_falling.Rotate(0,0,-90);
-                if (rec_now!=4)
+                if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    current_falling.anchoredPosition -= new Vector2(15f, 15f);
+                    int z = (int)teris.transform.eulerAngles.z;
+                    current_falling.Rotate(0, 0, -90);
+                    if (rec_now != 4)
+                    {
+                        if (z == 0 || z == 180)
+                        {
+                            current_falling.anchoredPosition -= new Vector2(teris.offsetX, teris.offsetY);
+                        }
+                        if (z == 90 || z == 270)
+                        {
+                            current_falling.anchoredPosition += new Vector2(teris.offsetX, teris.offsetY);
+                        }
+                    }
                 }
             }
-
             //按鍵加速掉落否則停止
             if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
             {
@@ -126,6 +141,7 @@ public class TetrisManager : MonoBehaviour
     private void generate()
     {
        nexttarget = Random.Range(0, 6);
+       //nexttarget = 0;
         nextteris.GetChild(nexttarget).gameObject.SetActive(true); 
     }
     /// <summary>
@@ -169,6 +185,17 @@ public class TetrisManager : MonoBehaviour
     {
     }
 
+    private IEnumerator shaker()
+    {
+        RectTransform rect = to_canvas.GetComponent<RectTransform>();
+        rect.anchoredPosition += Vector2.up * 30;
+        yield return new WaitForSeconds(0.05f);
+        rect.anchoredPosition = Vector2.zero;
+        yield return new WaitForSeconds(0.05f);
+        rect.anchoredPosition += Vector2.up * 20;
+        yield return new WaitForSeconds(0.05f);
+        rect.anchoredPosition = Vector2.zero;
+    }
 
     #endregion
 }
