@@ -157,7 +157,7 @@ MonoBehaviour:
   length_0: 50
   length_90: 65
   rec_length: 30
-  Limit_R_length0r: 65
+  Limit_R_length0r: 0
   Limit_R_length90r: 0
   Limit_R_length0l: 65
   Limit_R_length90l: 0

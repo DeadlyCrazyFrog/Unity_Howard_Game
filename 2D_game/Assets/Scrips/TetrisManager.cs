@@ -29,6 +29,7 @@ public class TetrisManager : MonoBehaviour
     private float timer;
     //12/29新增 為了方塊
     private int rec_now;
+    private bool if_fast_down;
     private Vector2[] pos_start =
     {
     new Vector2(0,330),
@@ -45,13 +46,12 @@ public class TetrisManager : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            StartCoroutine(shaker());
-        }
+
+        Fast_down();
         if (current_falling)
         {
             Teris teris = current_falling.GetComponent<Teris>();
+            int z = (int)teris.transform.eulerAngles.z;
             counting();
             if (timer >= Drop_Speed)
             {
@@ -60,7 +60,7 @@ public class TetrisManager : MonoBehaviour
             }
             #region 按鍵左右選轉加速落下
             //按鍵往左往右
-            if (current_falling.anchoredPosition.x < 195)
+            if (current_falling.anchoredPosition.x < 195 && rec_now !=5)
             {
                 if (!teris.wall_right)
                 {
@@ -70,7 +70,7 @@ public class TetrisManager : MonoBehaviour
                     }
                 }
             }
-            if (current_falling.anchoredPosition.x > -195)
+            if (current_falling.anchoredPosition.x > -195 && rec_now != 5)
             {
                 if (!teris.wall_left)
                 {
@@ -80,12 +80,57 @@ public class TetrisManager : MonoBehaviour
                     }
                 }
             }
+
+            #region 1字形特赦
+            if (current_falling.anchoredPosition.x < 200 && rec_now == 5 && (z==0 || z==180))
+            {
+                
+                if (!teris.wall_right)
+                {
+                    if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+                    {
+                        current_falling.anchoredPosition += new Vector2(30f, 0f);
+                    }
+                }
+            }
+            if (current_falling.anchoredPosition.x > -200 && rec_now == 5 && (z == 0 || z == 180))
+            {
+                if (!teris.wall_left)
+                {
+                    if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+                    {
+                        current_falling.anchoredPosition -= new Vector2(30f, 0f);
+                    }
+                }
+            }
+            if (current_falling.anchoredPosition.x < 170 && rec_now == 5 && (z == 90 || z == 270))
+            {
+
+                if (!teris.wall_right)
+                {
+                    if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+                    {
+                        current_falling.anchoredPosition += new Vector2(30f, 0f);
+                    }
+                }
+            }
+            if (current_falling.anchoredPosition.x > -155 && rec_now == 5 && (z == 90 || z == 270))
+            {
+                if (!teris.wall_left)
+                {
+                    if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+                    {
+                        current_falling.anchoredPosition -= new Vector2(30f, 0f);
+                    }
+                }
+            }
+            #endregion
             //按鍵旋轉
             if (teris.can_rotate)
             {
                 if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    int z = (int)teris.transform.eulerAngles.z;
+                    
                     current_falling.Rotate(0, 0, -90);
                     if (rec_now != 4)
                     {
@@ -101,29 +146,73 @@ public class TetrisManager : MonoBehaviour
                 }
             }
             //按鍵加速掉落否則停止
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            if (!if_fast_down)
             {
-                Drop_Speed = 0.2f;
+
+
+                if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+                {
+                    Drop_Speed = 0.2f;
+                }
+                else
+                {
+                    Drop_Speed = 1.5f;
+                }
             }
-            else
+            #endregion
+            #region 停止判定
+            //print(teris.name+teris.wall_down);
+            if ((rec_now != 4 && rec_now != 5 && teris.wall_down) || teris.check_colider)
             {
-                Drop_Speed = 1.5f;
-            }
-            # endregion
-            if (current_falling.anchoredPosition.y<-225 && rec_now != 4)
-            {
+                Setground();
+                shaker();
                 StartGAME();
+                
+
             }
-            if (current_falling.anchoredPosition.y < -240 && rec_now == 4)
+            if ((rec_now == 4 && teris.wall_down) || teris.check_colider)
             {
+                Setground();
+                shaker();
                 StartGAME();
+                
+                
             }
+            if ((rec_now == 5 && (z== 0 || z==180) && teris.wall_down) || teris.check_colider)
+            {
+                Setground();
+                shaker();
+                StartGAME();
+                
+              
+            }
+            if ((rec_now == 5 && (z == 90 || z == 270)&&teris.wall_down) || teris.check_colider)
+            {
+                Setground();
+                shaker();
+                StartGAME();
+                
+
+            }
+            #endregion
+        }
+
+
+    }
+    private void Setground()
+    {
+        int count = current_falling.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            current_falling.GetChild(i).name = "方塊";
+            current_falling.GetChild(i).gameObject.layer = 10;
+            
         }
 
     }
-
     public void StartGAME()
     {
+        if_fast_down = false;//阻止繼續快速落下
         //生成generate()裡所指定之方塊樣式
         //Instantiate(產生的子物件,子物件的目標區域);
         GameObject teris = nextteris.GetChild(nexttarget).gameObject;
@@ -134,6 +223,20 @@ public class TetrisManager : MonoBehaviour
         generate();
         current_falling = current.GetComponent<RectTransform>();
     }
+    public void Fast_down()
+    {
+        if (current_falling && !if_fast_down)
+        {
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if_fast_down = true;
+                Drop_Speed = 0.02f;
+                StartCoroutine(shaker());
+            }
+        }
+
+    }
     #region 方法
     /// <summary>
     /// 生成俄羅斯方塊
@@ -141,7 +244,7 @@ public class TetrisManager : MonoBehaviour
     private void generate()
     {
        nexttarget = Random.Range(0, 6);
-       //nexttarget = 0;
+       //nexttarget = 4;//測試用
         nextteris.GetChild(nexttarget).gameObject.SetActive(true); 
     }
     /// <summary>
@@ -187,14 +290,14 @@ public class TetrisManager : MonoBehaviour
 
     private IEnumerator shaker()
     {
-        RectTransform rect = to_canvas.GetComponent<RectTransform>();
-        rect.anchoredPosition += Vector2.up * 30;
-        yield return new WaitForSeconds(0.05f);
-        rect.anchoredPosition = Vector2.zero;
-        yield return new WaitForSeconds(0.05f);
-        rect.anchoredPosition += Vector2.up * 20;
-        yield return new WaitForSeconds(0.05f);
-        rect.anchoredPosition = Vector2.zero;
+        //RectTransform rect = to_canvas.GetComponent<RectTransform>();
+        //rect.anchoredPosition += Vector2.up * 30;
+        //yield return new WaitForSeconds(0.05f);
+        //rect.anchoredPosition = Vector2.zero;
+        //yield return new WaitForSeconds(0.05f);
+        //rect.anchoredPosition += Vector2.up * 20;
+        yield return new WaitForSeconds(0.5f);
+        //rect.anchoredPosition = Vector2.zero;
     }
 
     #endregion

@@ -5669,6 +5669,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: "1\u5B57\u5F62"
       objectReference: {fileID: 0}
+    - target: {fileID: 2410158008982966380, guid: 625db9041346523488404ce6d09878df,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 625db9041346523488404ce6d09878df, type: 3}
 --- !u!224 &401790062 stripped
@@ -23907,6 +23912,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 583914238}
     m_Modifications:
+    - target: {fileID: 1877372750, guid: 1788b95d9e81f7342b55b44b7f309781, type: 3}
+      propertyPath: rec_length
+      value: 65
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877372750, guid: 1788b95d9e81f7342b55b44b7f309781, type: 3}
+      propertyPath: small_length
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7029578582533569007, guid: 1788b95d9e81f7342b55b44b7f309781,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -24016,6 +24029,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: "Z\u578B \u53F3"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7318878997429057351, guid: 1788b95d9e81f7342b55b44b7f309781,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1788b95d9e81f7342b55b44b7f309781, type: 3}

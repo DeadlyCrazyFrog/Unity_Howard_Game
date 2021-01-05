@@ -458,7 +458,7 @@ MonoBehaviour:
   length_90: 50
   rec_length: 22.8
   Limit_R_length0r: 0
-  Limit_R_length90r: 50
+  Limit_R_length90r: 0
   Limit_R_length0l: 0
   Limit_R_length90l: 50
   offsetX: -15
@@ -466,3 +466,4 @@ MonoBehaviour:
   wall_right: 0
   wall_left: 0
   wall_down: 0
+  can_rotate: 0

@@ -54,12 +54,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   T: {fileID: 2410158008982966380}
   Scale_X: 0.3
-  length_0: 30
+  length_0: 50
   length_90: 90
   rec_length: 30
+  Limit_R_length0r: 40
+  Limit_R_length90r: 0
+  Limit_R_length0l: 60
+  Limit_R_length90l: 0
+  offsetX: 15
+  offsetY: 15
   wall_right: 0
   wall_left: 0
   wall_down: 0
+  can_rotate: 0
 --- !u!1 &3214093120802377884
 GameObject:
   m_ObjectHideFlags: 0
