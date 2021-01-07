@@ -6,7 +6,7 @@ public class TetrisManager : MonoBehaviour
 {
     [Header("掉落時間")]
     [Range(0.1f, 3f)]
-    public float Drop_Speed = 1.5F;
+    public float Drop_Speed = 0.8F;
     [Header("目前分數")]
     public float Your_score;// 目前分數
     [Header("最高分數")]
@@ -62,7 +62,7 @@ public class TetrisManager : MonoBehaviour
             //按鍵往左往右
             if (current_falling.anchoredPosition.x < 195 && rec_now !=5)
             {
-                if (!teris.wall_right)
+                if (!teris.wall_right && !teris.small_right)
                 {
                     if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                     {
@@ -72,7 +72,7 @@ public class TetrisManager : MonoBehaviour
             }
             if (current_falling.anchoredPosition.x > -195 && rec_now != 5)
             {
-                if (!teris.wall_left)
+                if (!teris.wall_left && !teris.small_left)
                 {
                     if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                     {
@@ -156,43 +156,17 @@ public class TetrisManager : MonoBehaviour
                 }
                 else
                 {
-                    Drop_Speed = 1.5f;
+                    Drop_Speed = 0.8f;
                 }
             }
             #endregion
             #region 停止判定
             //print(teris.name+teris.wall_down);
-            if ((rec_now != 4 && rec_now != 5 && teris.wall_down) || teris.check_colider)
+            if (teris.wall_down || teris.small_bottom)
             {
                 Setground();
                 shaker();
                 StartGAME();
-                
-
-            }
-            if ((rec_now == 4 && teris.wall_down) || teris.check_colider)
-            {
-                Setground();
-                shaker();
-                StartGAME();
-                
-                
-            }
-            if ((rec_now == 5 && (z== 0 || z==180) && teris.wall_down) || teris.check_colider)
-            {
-                Setground();
-                shaker();
-                StartGAME();
-                
-              
-            }
-            if ((rec_now == 5 && (z == 90 || z == 270)&&teris.wall_down) || teris.check_colider)
-            {
-                Setground();
-                shaker();
-                StartGAME();
-                
-
             }
             #endregion
         }
@@ -290,14 +264,14 @@ public class TetrisManager : MonoBehaviour
 
     private IEnumerator shaker()
     {
-        //RectTransform rect = to_canvas.GetComponent<RectTransform>();
-        //rect.anchoredPosition += Vector2.up * 30;
-        //yield return new WaitForSeconds(0.05f);
-        //rect.anchoredPosition = Vector2.zero;
-        //yield return new WaitForSeconds(0.05f);
-        //rect.anchoredPosition += Vector2.up * 20;
+        RectTransform rect = to_canvas.GetComponent<RectTransform>();
+        rect.anchoredPosition += Vector2.up * 30;
+        yield return new WaitForSeconds(0.05f);
+        rect.anchoredPosition = Vector2.zero;
+        yield return new WaitForSeconds(0.05f);
+        rect.anchoredPosition += Vector2.up * 20;
         yield return new WaitForSeconds(0.5f);
-        //rect.anchoredPosition = Vector2.zero;
+        rect.anchoredPosition = Vector2.zero;
     }
 
     #endregion

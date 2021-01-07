@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Teris : MonoBehaviour
@@ -30,8 +31,11 @@ public class Teris : MonoBehaviour
     public bool wall_left;
     public bool wall_down = false;
     public bool can_rotate;
-    public bool check_colider;
+    public bool small_bottom;
     private float small_length=40;
+    public bool small_right;
+    public bool small_left;
+    public bool [] small_right_all;
     private void OnDrawGizmos()
     {
         #region 旋轉和移動判定線
@@ -78,19 +82,54 @@ public class Teris : MonoBehaviour
             Gizmos.color = Color.black;
             Gizmos.DrawRay(transform.GetChild(i).position, Vector2.down * small_length);
         }
-
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Gizmos.color = Color.black;
+            Gizmos.DrawRay(transform.GetChild(i).position, Vector2.right * small_length);
+        }
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Gizmos.color = Color.black;
+            Gizmos.DrawRay(transform.GetChild(i).position, Vector2.left * small_length);
+        }
     }
     private void check_bottom()
     {
         for (int i = 0; i < transform.childCount; i++)
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(i).position, Vector3.down, small_length, 1 << 10);
-            if (hit && hit.collider.name=="方塊")
+            if (hit && hit.collider.name == "方塊")
             {
-                check_colider = true;
+                small_bottom = true;
+            }
+
+        }
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(i).position, Vector3.right, small_length, 1 << 10);
+            if (hit && hit.collider.name == "方塊")
+            {
+                small_right_all[i] = true;
+            }
+            else
+            {
+                small_right = false;
             }
         }
-
+        var all_right = small_right_all.Where(x => x == true);
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(i).position, Vector3.left, small_length, 1 << 10);
+            if (hit && hit.collider.name == "方塊")
+            {
+                print("hit left");
+                small_left = true;
+            }
+            else
+            {
+                small_left = false;
+            }
+        }
     }
 
     /// <summary>
@@ -147,6 +186,7 @@ public class Teris : MonoBehaviour
     void Start()
     {
         T.transform.localScale = new Vector3(Scale_X, 0.3f, 1f);
+        small_right_all = new bool[transform.childCount];
     }
 
     // Update is called once per frame
