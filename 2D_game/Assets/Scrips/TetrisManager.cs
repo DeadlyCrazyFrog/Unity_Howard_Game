@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 //using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
 
 public class TetrisManager : MonoBehaviour
 {
@@ -41,7 +43,7 @@ public class TetrisManager : MonoBehaviour
     };
     private void Start()
     {
-        
+
         generate();
     }
     private void Update()
@@ -60,7 +62,7 @@ public class TetrisManager : MonoBehaviour
             }
             #region 按鍵左右選轉加速落下
             //按鍵往左往右
-            if (current_falling.anchoredPosition.x < 195 && rec_now !=5)
+            if (current_falling.anchoredPosition.x < 195 && rec_now != 5)
             {
                 if (!teris.wall_right && !teris.small_right)
                 {
@@ -82,10 +84,10 @@ public class TetrisManager : MonoBehaviour
             }
 
             #region 1字形特赦
-            if (current_falling.anchoredPosition.x < 200 && rec_now == 5 && (z==0 || z==180))
+            if (current_falling.anchoredPosition.x < 200 && rec_now == 5 && (z == 0 || z == 180))
             {
-                
-                if (!teris.wall_right)
+
+                if (!teris.wall_right && !teris.small_right)
                 {
                     if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                     {
@@ -95,7 +97,7 @@ public class TetrisManager : MonoBehaviour
             }
             if (current_falling.anchoredPosition.x > -200 && rec_now == 5 && (z == 0 || z == 180))
             {
-                if (!teris.wall_left)
+                if (!teris.wall_left && !teris.small_left)
                 {
                     if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                     {
@@ -106,7 +108,7 @@ public class TetrisManager : MonoBehaviour
             if (current_falling.anchoredPosition.x < 170 && rec_now == 5 && (z == 90 || z == 270))
             {
 
-                if (!teris.wall_right)
+                if (!teris.wall_right && !teris.small_right)
                 {
                     if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                     {
@@ -116,7 +118,7 @@ public class TetrisManager : MonoBehaviour
             }
             if (current_falling.anchoredPosition.x > -155 && rec_now == 5 && (z == 90 || z == 270))
             {
-                if (!teris.wall_left)
+                if (!teris.wall_left && !teris.small_left)
                 {
                     if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                     {
@@ -130,7 +132,7 @@ public class TetrisManager : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    
+
                     current_falling.Rotate(0, 0, -90);
                     if (rec_now != 4)
                     {
@@ -165,6 +167,7 @@ public class TetrisManager : MonoBehaviour
             if (teris.wall_down || teris.small_bottom)
             {
                 Setground();
+                Check_tetris();
                 shaker();
                 StartGAME();
             }
@@ -180,7 +183,7 @@ public class TetrisManager : MonoBehaviour
         {
             current_falling.GetChild(i).name = "方塊";
             current_falling.GetChild(i).gameObject.layer = 10;
-            
+
         }
 
     }
@@ -191,7 +194,7 @@ public class TetrisManager : MonoBehaviour
         //Instantiate(產生的子物件,子物件的目標區域);
         GameObject teris = nextteris.GetChild(nexttarget).gameObject;
         rec_now = nexttarget;
-        GameObject current=Instantiate(teris, to_canvas);
+        GameObject current = Instantiate(teris, to_canvas);
         current.GetComponent<RectTransform>().anchoredPosition = pos_start[(nexttarget)];
         teris.SetActive(false);
         generate();
@@ -211,6 +214,50 @@ public class TetrisManager : MonoBehaviour
         }
 
     }
+
+    [Header("分數判定區域")]
+    public Transform to_score_area;
+    public RectTransform[] rectsmall;
+    public void Check_tetris()
+    {
+        int count = current_falling.childCount;
+        for (int i = 0; i < count; i++)
+        {
+            current_falling.GetChild(0).SetParent(to_score_area);
+        }
+        Destroy(current_falling.gameObject);
+        rectsmall = new RectTransform[to_score_area.childCount];
+        for (int i = 0; i < to_score_area.childCount; i++)
+        {
+            rectsmall[i] = to_score_area.GetChild(i).GetComponent<RectTransform>();
+        }
+        var small = rectsmall.Where(x => x.anchoredPosition.y == -270);
+        print(small.ToArray().Length);
+        shine(rectsmall);
+    }
+    public IEnumerable shine(RectTransform[] smalls)
+    {
+        for (int i = 0; i < 16; i++)
+        {
+            smalls[i].GetComponent<Image>().enabled = false;       
+        }
+        yield return new WaitForSeconds(0.05f);
+        for (int i = 0; i < 16; i++)
+        {
+            smalls[i].GetComponent<Image>().enabled = true;
+        }
+        yield return new WaitForSeconds(0.05f);
+        for (int i = 0; i < 16; i++)
+        {
+            smalls[i].GetComponent<Image>().enabled = false;
+        }
+        yield return new WaitForSeconds(0.05f);
+        for (int i = 0; i < 16; i++)
+        {
+            smalls[i].GetComponent<Image>().enabled = true;
+        }
+        yield return new WaitForSeconds(0.05f);
+    }
     #region 方法
     /// <summary>
     /// 生成俄羅斯方塊
@@ -218,7 +265,8 @@ public class TetrisManager : MonoBehaviour
     private void generate()
     {
        nexttarget = Random.Range(0, 6);
-       //nexttarget = 4;//測試用
+       nexttarget = 5;//測試用
+       //nexttarget = 5;//測試用
         nextteris.GetChild(nexttarget).gameObject.SetActive(true); 
     }
     /// <summary>

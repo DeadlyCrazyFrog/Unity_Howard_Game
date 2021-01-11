@@ -35,7 +35,9 @@ public class Teris : MonoBehaviour
     private float small_length=40;
     public bool small_right;
     public bool small_left;
+    //判斷所有方塊右邊是否有其他方塊
     public bool [] small_right_all;
+    public bool [] small_left_all;
     private void OnDrawGizmos()
     {
         #region 旋轉和移動判定線
@@ -107,29 +109,32 @@ public class Teris : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(i).position, Vector3.right, small_length, 1 << 10);
+            //如果右邊有方塊就統計多少和那些方塊被打勾
             if (hit && hit.collider.name == "方塊")
             {
                 small_right_all[i] = true;
             }
             else
             {
-                small_right = false;
+                small_right_all[i] = false;
             }
-        }
+         }
         var all_right = small_right_all.Where(x => x == true);
+        small_right = all_right.ToArray().Length > 0;
         for (int i = 0; i < transform.childCount; i++)
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(i).position, Vector3.left, small_length, 1 << 10);
             if (hit && hit.collider.name == "方塊")
             {
-                print("hit left");
-                small_left = true;
+                small_left_all[i] = true;
             }
             else
             {
-                small_left = false;
+                small_left_all[i] = false;
             }
         }
+        var all_left = small_left_all.Where(x => x == true);
+        small_left = all_left.ToArray().Length > 0;
     }
 
     /// <summary>
@@ -187,6 +192,7 @@ public class Teris : MonoBehaviour
     {
         T.transform.localScale = new Vector3(Scale_X, 0.3f, 1f);
         small_right_all = new bool[transform.childCount];
+        small_left_all = new bool[transform.childCount];
     }
 
     // Update is called once per frame
