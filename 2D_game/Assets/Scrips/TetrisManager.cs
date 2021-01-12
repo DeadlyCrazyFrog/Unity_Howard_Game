@@ -10,11 +10,11 @@ public class TetrisManager : MonoBehaviour
     [Range(0.1f, 3f)]
     public float Drop_Speed = 0.8F;
     [Header("目前分數")]
-    public float Your_score;// 目前分數
+    public float Your_score = 0f;// 目前分數
     [Header("最高分數")]
     public float highest_score;// 最高分數      
     [Header("等級")]
-    public int Level = 1;// 等級        
+    public float Level = 1;// 等級        
     [Header("結束畫面")]
     public GameObject result_scene;// 結束畫面      
     [Header("音效:掉落、移動與旋轉、消除、結束")]
@@ -45,6 +45,8 @@ public class TetrisManager : MonoBehaviour
     {
 
         generate();
+        scoretxt.text = "你的分數:0";
+        leveltxt.text = "等級:1";
     }
     private void Update()
     {
@@ -167,7 +169,7 @@ public class TetrisManager : MonoBehaviour
             if (teris.wall_down || teris.small_bottom)
             {
                 Setground();
-                Check_tetris();
+                StartCoroutine(Check_tetris());
                 shaker();
                 StartGAME();
             }
@@ -218,7 +220,9 @@ public class TetrisManager : MonoBehaviour
     [Header("分數判定區域")]
     public Transform to_score_area;
     public RectTransform[] rectsmall;
-    public void Check_tetris()
+    public bool[]destroyrow = new bool [19];
+    public float[] downheight;
+    public IEnumerator Check_tetris()
     {
         int count = current_falling.childCount;
         for (int i = 0; i < count; i++)
@@ -231,11 +235,43 @@ public class TetrisManager : MonoBehaviour
         {
             rectsmall[i] = to_score_area.GetChild(i).GetComponent<RectTransform>();
         }
-        var small = rectsmall.Where(x => x.anchoredPosition.y == -270);
-        print(small.ToArray().Length);
-        shine(rectsmall);
+
+        int row = 19;
+        for (int i = 0; i < row; i++)
+        {
+            float bottom = -270f;
+            float step = 30f;
+            var small = rectsmall.Where(x => x.anchoredPosition.y >= bottom+step*i - 5 && x.anchoredPosition.y <= bottom + step * i + 5);
+            if (small.ToArray().Length==16)
+            {
+                yield return StartCoroutine(shine(small.ToArray()));
+                destroyrow[i] = true;
+            }
+        }
+        downheight = new float[to_score_area.childCount];
+        for (int i = 0; i < downheight.Length; i++)
+        {
+            downheight[i] = 0;
+        }
+        //計算掉落高度
+        for (int i = 0; i < destroyrow.Length; i++)
+        {
+            if (!destroyrow[i]) continue;
+            for (int j = 0; j < rectsmall.Length; j++)
+            {
+                if (rectsmall[j].anchoredPosition.y > -270 +30*i-5)
+                {
+                    downheight[j] -=30;
+                }
+            }
+            destroyrow[i] = false;
+        }
+        for (int i = 0; i < rectsmall.Length; i++)
+        {
+            rectsmall[i].anchoredPosition += Vector2.up*downheight[i];
+        }
     }
-    public IEnumerable shine(RectTransform[] smalls)
+    public IEnumerator shine(RectTransform[] smalls)
     {
         for (int i = 0; i < 16; i++)
         {
@@ -257,6 +293,21 @@ public class TetrisManager : MonoBehaviour
             smalls[i].GetComponent<Image>().enabled = true;
         }
         yield return new WaitForSeconds(0.05f);
+
+        yield return new WaitForSeconds(0.05f);
+        for (int i = 0; i < 16; i++)
+        {
+            Destroy(smalls[i].gameObject);
+            
+        }
+        add_score(100f);
+        //避免消除完上層方塊未掉落產生錯誤
+        yield return new WaitForSeconds(0.05f);
+        rectsmall = new RectTransform[to_score_area.childCount];
+        for (int i = 0; i < to_score_area.childCount; i++)
+        {
+            rectsmall[i] = to_score_area.GetChild(i).GetComponent<RectTransform>();
+        }
     }
     #region 方法
     /// <summary>
@@ -276,14 +327,21 @@ public class TetrisManager : MonoBehaviour
     {
         timer += Time.deltaTime;
     }
+    [Header("現在分數")]
+    public Text scoretxt;
+    [Header("你的等級")]
+    public Text leveltxt;
     /// <summary>
     /// 添加分數
     /// </summary>
     /// <param name="x"></param>
     /// <returns></returns>
-    public int add_score(int x)
+    public void add_score(float x)
     {
-        return x;
+        Your_score += x;
+        scoretxt.text = "你的分數" + Your_score;
+        Level = Your_score / 100f + 1;
+        leveltxt.text = "等級:" + Level;
     }
     /// <summary>
     /// 遊戲時間
