@@ -8,7 +8,7 @@ public class TetrisManager : MonoBehaviour
 {
     [Header("掉落時間")]
     [Range(0.1f, 3f)]
-    public float Drop_Speed = 0.8F;
+    public float Drop_Speed = 1.5F;
     [Header("目前分數")]
     public float Your_score = 0f;// 目前分數
     [Header("最高分數")]
@@ -160,7 +160,7 @@ public class TetrisManager : MonoBehaviour
                 }
                 else
                 {
-                    Drop_Speed = 0.8f;
+                    Drop_Speed = Drop_Speed_Max;
                 }
             }
             #endregion
@@ -331,6 +331,7 @@ public class TetrisManager : MonoBehaviour
     public Text scoretxt;
     [Header("你的等級")]
     public Text leveltxt;
+    public float Drop_Speed_Max=1.5f;
     /// <summary>
     /// 添加分數
     /// </summary>
@@ -342,6 +343,9 @@ public class TetrisManager : MonoBehaviour
         scoretxt.text = "你的分數" + Your_score;
         Level = Your_score / 100f + 1;
         leveltxt.text = "等級:" + Level;
+        Drop_Speed_Max -= Level / 10f;
+        Drop_Speed_Max = Mathf.Clamp(Drop_Speed_Max,0.1f,99f);
+        Drop_Speed = Drop_Speed_Max;
     }
     /// <summary>
     /// 遊戲時間

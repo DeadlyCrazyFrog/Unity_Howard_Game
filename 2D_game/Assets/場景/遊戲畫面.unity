@@ -7512,7 +7512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72b7eb3e8e330044aa805e9c3a8e354d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Drop_Speed: 0.99
+  Drop_Speed: 1.53
   Your_score: 0
   highest_score: 0
   Level: 1
@@ -7530,6 +7530,7 @@ MonoBehaviour:
   downheight: []
   scoretxt: {fileID: 157576827}
   leveltxt: {fileID: 1969870256}
+  Drop_Speed_Max: 1.5
 --- !u!4 &528240843
 Transform:
   m_ObjectHideFlags: 0
