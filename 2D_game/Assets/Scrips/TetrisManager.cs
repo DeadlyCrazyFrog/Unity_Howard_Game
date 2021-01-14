@@ -2,6 +2,7 @@
 //using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Linq;
 
 public class TetrisManager : MonoBehaviour
@@ -41,6 +42,7 @@ public class TetrisManager : MonoBehaviour
     new Vector2(0,315),
     new Vector2(-15,315)
     };
+    public bool Gameover = false;
     private void Start()
     {
 
@@ -50,6 +52,13 @@ public class TetrisManager : MonoBehaviour
     }
     private void Update()
     {
+        if (Gameover)
+        {
+            current_falling.SetParent(to_score_area);
+            //Destroy(current_falling.gameObject);
+            return;           
+        }
+          
 
         Fast_down();
         if (current_falling)
@@ -185,7 +194,12 @@ public class TetrisManager : MonoBehaviour
         {
             current_falling.GetChild(i).name = "方塊";
             current_falling.GetChild(i).gameObject.layer = 10;
+            float y = current_falling.GetChild(i).GetComponent<RectTransform>().anchoredPosition.y;
+            if (y >= 300 - 10 && y <= 300 + 10)
+            {
 
+                end_of_game();
+            }
         }
 
     }
@@ -269,7 +283,13 @@ public class TetrisManager : MonoBehaviour
         for (int i = 0; i < rectsmall.Length; i++)
         {
             rectsmall[i].anchoredPosition += Vector2.up*downheight[i];
+            float y = rectsmall[i].anchoredPosition.y;
+            if (y >= 300 - 10 && y <= 300 + 10)
+            {
+                end_of_game();
+            }
         }
+
     }
     public IEnumerator shine(RectTransform[] smalls)
     {
@@ -341,7 +361,7 @@ public class TetrisManager : MonoBehaviour
     {
         Your_score += x;
         scoretxt.text = "你的分數" + Your_score;
-        Level = Your_score / 100f + 1;
+        Level = Mathf.Ceil(Your_score / (100f*Level)) + 1;
         leveltxt.text = "等級:" + Level;
         Drop_Speed_Max -= Level / 10f;
         Drop_Speed_Max = Mathf.Clamp(Drop_Speed_Max,0.1f,99f);
@@ -353,23 +373,45 @@ public class TetrisManager : MonoBehaviour
     private void time_pass()
     {
     }
+
+
+    [Header("目前分數")]
+    public Text current_score;
+    [Header("最高分數")]
+    public Text high_score;
     /// <summary>
     /// 遊戲結束
     /// </summary>
     private void end_of_game()
     {
+        if (!Gameover)
+        {
+
+            Gameover = true;
+            StopAllCoroutines();
+            result_scene.SetActive(true);
+            current_score.text = "目前分數" + Your_score;
+            if (Your_score > PlayerPrefs.GetInt("最高分數"))
+            {
+                PlayerPrefs.SetInt("最高分數", (int)(Your_score));
+                high_score.text = "最高分數" + Your_score;
+            }
+            else high_score.text = "最高分數" + PlayerPrefs.GetInt("最高分數");
+        }
     }
     /// <summary>
     /// 重新遊戲
     /// </summary>
     public void restarted()
     {
+        SceneManager.LoadScene("遊戲畫面");
     }
     /// <summary>
     /// 離開遊戲
     /// </summary>
     public void exit_game()
     {
+        Application.Quit();
     }
 
     private IEnumerator shaker()
